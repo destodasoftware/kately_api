@@ -2,6 +2,7 @@
 Kately API merupakan interface yang digunakan untuk mengintegrasikan beberapa aplikasi Kately lainnya (`Kately Office`).
 
 **Tentang Kately**
+
 Sebuah software kelola ritel (khususnya untuk ritel brand pakaian) yang dapat membantu anda mengelola transaksi
 penjualan di store. Dengan bantuan Kately, anda bisa mengelola banyak aktivitas ritel yang sebelumnya
 biasa Anda kerjakan sendiri.
@@ -20,9 +21,11 @@ $ pip install -r requirements.txt
 ```
 
 **Konfigurasi**
+
 Jika Anda ingin mengubah konfigurasi lainnya, Anda bisa melakukannya pada file `config/settings.py`.
 
 **Migrasi**
+
 Jalankan perintah berikut untuk menjalankan migrasi:
 
 ```
@@ -30,6 +33,7 @@ $ python manage.py migrate
 ```
 
 **Menjalankan Development Server**
+
 Setelah semuanya selesai, Anda bisa langsung menjalankan development server dengan mengetik perintah:
 
 ```
