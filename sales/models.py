@@ -1,12 +1,11 @@
 from django.db import models
 
-from products.models import Product
+from products.models import Product, Brand
 from users.models import Customer
 from utils.models import Utility
 
 
 class Sale(Utility):
-    STATUS_NEW = 'new'
     STATUS_UNFULFILLED = 'unfulfilled'
     STATUS_FULFILLED = 'fulfilled'
     STATUS_FINISH = 'finish'
@@ -17,10 +16,11 @@ class Sale(Utility):
     )
 
     sale_number = models.CharField(max_length=100, unique=True)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     total = models.DecimalField(max_digits=100, decimal_places=2, default=0.0)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=STATUS_UNFULFILLED)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.sale_number

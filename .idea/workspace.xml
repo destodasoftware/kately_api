@@ -3,7 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2f395ead-6e16-4bcb-85b5-70f44cf47276" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kately-github.png" beforeDir="false" afterPath="$PROJECT_DIR$/kately-github.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/office/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/office/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/office/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sales/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sales/models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -93,7 +98,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564313369088</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Menambahkan kately github">
+      <created>1564345413994</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1564345413994</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -101,7 +113,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -109,6 +123,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Menambahkan enter pada dokumentasi README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="Menambahkan enter pada dokumentasi README.md" />
+    <MESSAGE value="Menambahkan kately github" />
+    <option name="LAST_COMMIT_MESSAGE" value="Menambahkan kately github" />
   </component>
 </project>

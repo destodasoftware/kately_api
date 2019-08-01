@@ -55,6 +55,7 @@ INSTALLED_APPS += [
     'users',
     'products',
     'sales',
+    'purchasing',
     'rapidmin',
     'office',
 ]
