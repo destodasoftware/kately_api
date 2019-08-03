@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db.models import Sum
 from rest_framework import serializers
 

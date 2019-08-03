@@ -6,32 +6,25 @@ from utils.models import Utility
 
 
 class Sale(Utility):
-    STATUS_UNFULFILLED = 'unfulfilled'
-    STATUS_FULFILLED = 'fulfilled'
-    STATUS_FINISH = 'finish'
+    STATUS_OPEN = 'open'
+    STATUS_ARCHIEVED = 'archieved'
+    STATUS_CANCEL = 'cancel'
     STATUS_CHOICES = (
-        (STATUS_FULFILLED, 'Fulfilled'),
-        (STATUS_UNFULFILLED, 'Unfulfilled'),
-        (STATUS_FINISH, 'Finish'),
+        (STATUS_OPEN, 'Open'),
+        (STATUS_ARCHIEVED, 'Archieved'),
+        (STATUS_CANCEL, 'Cancel'),
     )
 
     sale_number = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     total = models.DecimalField(max_digits=100, decimal_places=2, default=0.0)
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=STATUS_UNFULFILLED)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=STATUS_OPEN)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.sale_number
-
-
-class CustomerSale(Utility):
-    sale = models.ForeignKey(Sale, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.customer.name
 
 
 class CashSale(Utility):
@@ -80,15 +73,20 @@ class Payment(Utility):
 
 
 class SaleItem(Utility):
-    sale = models.ForeignKey(Sale, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
-    price = models.DecimalField(decimal_places=2, max_digits=100)
+    sale = models.ForeignKey(Sale, on_delete=models.CASCADE, blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    price = models.DecimalField(decimal_places=2, max_digits=100, default=0.0)
     quantity = models.PositiveIntegerField(default=1)
-    note = models.TextField()
+    note = models.TextField(blank=True, null=True)
+    discount = models.PositiveIntegerField(default=0)
+    is_discount_percent = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+
+
+
 
 
 

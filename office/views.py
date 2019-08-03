@@ -31,6 +31,13 @@ class OfficeAuthToken(ObtainAuthToken):
         })
 
 
+class CustomerViewSet(viewsets.ModelViewSet):
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
@@ -159,3 +166,10 @@ class SaleViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         print(self.request.user)
         serializer.save(user=self.request.user)
+
+
+class ShippingViewSet(viewsets.ModelViewSet):
+    serializer_class = ShippingSerializer
+    queryset = Shipping.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
