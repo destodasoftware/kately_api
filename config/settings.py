@@ -58,6 +58,7 @@ INSTALLED_APPS += [
     'purchasing',
     'rapidmin',
     'office',
+    'cores',
 ]
 
 MIDDLEWARE = [

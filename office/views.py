@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Sum, F, Max, Avg, Count
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -8,10 +9,11 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from office.serializers import CategorySerializer, BrandSerializer, ArticleSerializer, ProductSerializer, \
+from cores.core import ProductCore
+from office.serializers import CategorySerializer, BrandSerializer, ProductSerializer, \
     CustomerSerializer, PaymentSerializer, SaleSerializer, ShippingSerializer, SaleItemSerializer, PurchaseSerializer, \
-    PurchaseItemSerializer
-from products.models import Brand, Category, Article, Product
+    PurchaseItemSerializer, ReportSaleItemSerializer
+from products.models import Brand, Category, Product
 from purchasing.models import PurchaseItem, Purchase
 from sales.models import Sale, Payment, Shipping, SaleItem
 from users.models import Customer
@@ -70,22 +72,6 @@ class BrandViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class ArticleViewSet(viewsets.ModelViewSet):
-    serializer_class = ArticleSerializer
-    queryset = Article.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        queryset = self.queryset
-        name = self.request.GET.get('name')
-
-        if name:
-            queryset = queryset.filter(name__icontains=name)
-
-        return queryset
-
-
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
@@ -93,17 +79,51 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        queryset = self.queryset.order_by('-created', 'id')
+        queryset = self.queryset.filter().order_by('-created', 'id')
         article = self.request.GET.get('article')
         name = self.request.GET.get('name')
+        root = self.request.GET.get('root')
+        show_root = self.request.GET.get('show_root')
+
+        if show_root:
+            queryset = queryset.filter(root=None)
 
         if article:
             queryset = queryset.filter(article__pk=article)
 
         if name:
-            queryset = queryset.filter(sku=name)
+            temp = queryset.filter(sku=name)
+
+            if not temp:
+                queryset = queryset.filter(name__icontains=name)
+
+        if root:
+            queryset = queryset.filter(root__pk=root)
 
         return queryset
+
+
+class SaleItemViewSet(viewsets.ModelViewSet):
+    serializer_class = SaleItemSerializer
+    queryset = SaleItem.objects.all().order_by('-created', 'id')
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter().order_by('-created', 'id')
+        sale = self.request.GET.get('sale')
+
+        if sale:
+            queryset = queryset.filter(sale__pk=sale)
+
+        return queryset
+
+    def perform_destroy(self, instance):
+        # Re stock again
+        stock = instance.quantity
+        instance.product.stock = instance.product.stock + stock
+        instance.product.save()
+        instance.delete()
 
 
 class PurchaseViewSet(viewsets.ModelViewSet):
@@ -131,6 +151,10 @@ class PurchaseViewSet(viewsets.ModelViewSet):
         except:
             raise NotAcceptable('Adjustment not accepted')
 
+    def perform_destroy(self, instance):
+        if instance.is_adjusment is False:
+            instance.delete()
+
 
 class PurchaseItemViewSet(viewsets.ModelViewSet):
     serializer_class = PurchaseItemSerializer
@@ -146,6 +170,10 @@ class PurchaseItemViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(purchase__pk=purchase)
 
         return queryset
+
+    def perform_destroy(self, instance):
+        if instance.purchase.is_adjusment is False:
+            instance.delete()
 
 
 class SaleViewSet(viewsets.ModelViewSet):
@@ -173,3 +201,29 @@ class ShippingViewSet(viewsets.ModelViewSet):
     queryset = Shipping.objects.all()
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+
+class ReportSaleItemViewSet(viewsets.ModelViewSet):
+    serializer_class = ReportSaleItemSerializer
+    queryset = SaleItem.objects.all()
+    # authentication_classes = (TokenAuthentication,)
+    # permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(quantity__gt=0, price__gt=0)
+
+        return queryset
+
+    @action(detail=False)
+    def summary(self, request):
+        queryset = self.queryset.filter(quantity__gt=0, price__gt=0)
+        summary = queryset.aggregate(
+            gross=Sum(F('quantity') * F('price')),
+            net=Sum(F('quantity') * (F('price') - F('product__cost'))),
+            total_quantity=Sum('quantity'),
+            total_customer=Count('sale__customer', distinct=True),
+            total_product=Count('product', distinct=True),
+            price_average=Avg('price')
+        )
+        return Response(summary)
+

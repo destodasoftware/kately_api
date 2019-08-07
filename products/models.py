@@ -17,23 +17,15 @@ class Brand(Utility):
         return self.name
 
 
-class Article(Utility):
-    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, blank=True, null=True)
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Product(Utility):
-    article = models.ForeignKey(Article, on_delete=models.SET_NULL, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
+    root = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, blank=True, null=True)
     sku = models.CharField(blank=True, null=True, max_length=30, unique=True)
     name = models.CharField(max_length=100, blank=True, null=True)
-    cost = models.DecimalField(decimal_places=2, max_digits=100)
-    price = models.DecimalField(decimal_places=2, max_digits=100)
-    stock = models.PositiveIntegerField()
+    cost = models.PositiveIntegerField(default=0)
+    price = models.PositiveIntegerField(default=0)
+    stock = models.PositiveIntegerField(blank=True, null=True)
     minimum_stock = models.PositiveIntegerField(default=0)
     color = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=100, blank=True, null=True)
