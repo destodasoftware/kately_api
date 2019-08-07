@@ -16,7 +16,7 @@ class Customer(Utility):
     address = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.user.email
+        return self.customer_number
 
 
 

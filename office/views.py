@@ -112,9 +112,17 @@ class SaleItemViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.filter().order_by('-created', 'id')
         sale = self.request.GET.get('sale')
+        name = self.request.GET.get('name')
 
         if sale:
             queryset = queryset.filter(sale__pk=sale)
+
+        if name:
+            qs = queryset.filter(product__sku=name)
+            if not qs:
+                queryset = queryset.filter(product__name__icontains=name)
+            else:
+                queryset = qs
 
         return queryset
 
@@ -192,9 +200,18 @@ class SaleViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        print(self.request.user)
         serializer.save(user=self.request.user)
 
+    def perform_destroy(self, instance):
+        # Restock all product
+        if instance.saleitem_set.all():
+            sale_items = instance.saleitem_set.all()
+            for sale_item in sale_items:
+                product = sale_item.product
+                product.stock = product.stock + sale_item.quantity
+                product.save()
+
+        instance.delete()
 
 class ShippingViewSet(viewsets.ModelViewSet):
     serializer_class = ShippingSerializer

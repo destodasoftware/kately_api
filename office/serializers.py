@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db.models import Sum
+from django.db.models import Sum, F
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -180,12 +180,19 @@ class SaleSerializer(serializers.ModelSerializer):
     pic = serializers.SerializerMethodField()
     brand_name = serializers.SerializerMethodField()
     shipping = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
 
     def get_shipping(self, value):
         try:
             return value.shipping.pk
         except:
             return None
+
+    def get_total(self, value):
+        if value.saleitem_set.all():
+            sale_items = value.saleitem_set.all()
+            return sale_items.aggregate(total=Sum(F('price') * F('quantity'))).get('total')
+        return 0
 
     def get_brand_name(self, value):
         if value.brand:

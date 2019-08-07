@@ -20,6 +20,7 @@ class Sale(Utility):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=STATUS_OPEN)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=True, null=True)
+    sale_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.sale_number
