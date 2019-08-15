@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2f395ead-6e16-4bcb-85b5-70f44cf47276" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/cores/mails.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cores/templates/cores/send_email_order.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/office/csvs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cores/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/cores/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/office/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/office/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/office/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sales/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sales/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,6 +22,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="Python Script" />
       </list>
     </option>
@@ -28,6 +33,7 @@
   <component name="ProjectId" id="1OVhk78MZGwpky734AootYgoGHk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />

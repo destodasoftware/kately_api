@@ -155,3 +155,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
     "DATE_INPUT_FORMATS": ["%Y-%m-%d"],
 }
+
+# Mail Setting
+
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '8d13c8ae573140'
+EMAIL_HOST_PASSWORD = '7d831b170b12b0'
+EMAIL_PORT = '2525'
+
+
+# Link Helper
+LINK_CHECK_ORDER = 'http://localhost.com/check-order/'

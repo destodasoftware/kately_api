@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum, F
 
 from products.models import Product, Brand
 from users.models import Customer
@@ -21,6 +22,21 @@ class Sale(Utility):
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default=STATUS_OPEN)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, blank=True, null=True)
     sale_date = models.DateField(blank=True, null=True)
+
+    def total(self):
+        lines_total = []
+        if self.saleitem_set.all():
+            for item in self.saleitem_set.all():
+                lines_total.append(item.total())
+
+        try:
+            shipment_cost = self.shipping.cost
+            lines_total.append(shipment_cost)
+        except:
+            pass
+
+        return sum(lines_total)
+
 
     def __str__(self):
         return self.sale_number
@@ -51,21 +67,36 @@ class Shipping(Utility):
     city = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     postal_code = models.CharField(max_length=100, blank=True, null=True)
+    tracking_number = models.CharField(blank=True, null=True, max_length=100)
+    courier_service = models.CharField(blank=True, null=True, max_length=100)
+    cost = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.country
 
 
 class Payment(Utility):
-    TYPE_BANK_TRANSFER = 'bank-transfer'
-    PAYMENT_TYPES = (
-        (TYPE_BANK_TRANSFER, 'Bank Transfer'),
-    )
+    # TYPE_BANK_TRANSFER = 'bank-transfer'
+    # TYPE_CASH = 'cash'
+    #
+    # BANK_BCA = 'BCA'
+    # BANK_MANDIRI = 'MANDIRI'
+    # BANK_BNI = 'BNI'
+    # BANK_BTN = 'BTN'
+    # BANK_BRI = 'BRI'
+    # BANK_CIMB_NIAGA = 'Cimb Niaga'
+    # PAYMENT_BANK = (
+    #     (BANK_BCA, BANK_BCA),
+    #     (BANK_MANDIRI, BANK_MANDIRI),
+    #     (BANK_BNI, BANK_BNI),
+    #     (BANK_BTN, BANK_BTN),
+    #     (BANK_BRI, BANK_BRI),
+    #     (BANK_CIMB_NIAGA, BANK_CIMB_NIAGA),
+    # )
     sale = models.OneToOneField(Sale, on_delete=models.CASCADE)
-    total = models.DecimalField(max_digits=100, decimal_places=2)
-    payment_type = models.CharField(max_length=100, default=TYPE_BANK_TRANSFER, choices=PAYMENT_TYPES)
+    amount = models.PositiveIntegerField(default=0)
     is_paid = models.BooleanField(default=False)
-    note = models.TextField()
+    # bank = models.CharField(max_length=100, default=BANK_BCA, choices=PAYMENT_BANK)
 
     def __str__(self):
         return self.sale.sale_number
@@ -76,6 +107,19 @@ class SaleItem(Utility):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
     price = models.PositiveIntegerField(default=0)
     quantity = models.PositiveIntegerField(default=1)
+    discount = models.PositiveIntegerField(default=0)
+    is_percent = models.BooleanField(default=False)
+
+    def price_after_discount(self):
+        if self.discount:
+            if self.is_percent:
+                return self.price * (self.discount / 100)
+            else:
+                return self.price - self.discount
+        return self.price
+
+    def total(self):
+        return self.price_after_discount() * self.quantity
 
     def __str__(self):
         return self.product.name

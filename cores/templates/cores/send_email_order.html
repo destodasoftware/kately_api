@@ -1,0 +1,26 @@
+<html>
+    <body>
+        <h2>Order {{ sale.sale_number }}</h2>
+        <p>
+            Hai, <b>{{ sale.customer.name }}</b>,
+            order dengan nomer
+            <b>{{ sale.sale_number }}</b> sedang diproses.
+            Berikut ini adalah item pembelian Anda:
+        </p>
+        <p>
+            <ul>
+                {% for item in sale.saleitem_set.all %}
+                <li>
+                    <h3>{{ item.product.name }}</h3>
+                    <p><small>SKU {{ item.product.sku }}</small></p>
+                    <p>{{ item.price }} x {{ item.quantity }} @ Rp. {{ item.total }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </p>
+        <p>
+            <h3>Pembayaran</h3>
+            <div>Tagihan yang perlu di bayar Rp. {{ sale.payment.amount }}.</div>
+        </p>
+    </body>
+</html>

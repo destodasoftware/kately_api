@@ -27,6 +27,13 @@ class ProductSerializer(serializers.ModelSerializer):
     root_name = serializers.SerializerMethodField()
     number_variation = serializers.SerializerMethodField()
     total_stock = serializers.SerializerMethodField()
+    no_child = serializers.SerializerMethodField()
+
+    def get_no_child(self, obj):
+        childs = Product.objects.filter(root=obj)
+        if childs:
+            return False
+        return True
 
     def get_number_variation(self, obj):
         if obj.product_set.all():
@@ -107,9 +114,24 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    total_orders = serializers.SerializerMethodField()
+    total_sales = serializers.SerializerMethodField()
+
+    def get_total_orders(self, obj):
+        if obj.sale_set.all():
+            return obj.sale_set.all().count()
+        return 0
+
+    def get_total_sales(self, obj):
+        if obj.sale_set.all():
+            return sum([i.total() for i in obj.sale_set.all()])
+        return 0
+
     class Meta:
         model = Customer
         fields = '__all__'
+
+
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
@@ -181,6 +203,13 @@ class SaleSerializer(serializers.ModelSerializer):
     brand_name = serializers.SerializerMethodField()
     shipping = serializers.SerializerMethodField()
     total = serializers.SerializerMethodField()
+    payment = serializers.SerializerMethodField()
+
+    def get_payment(self, value):
+        try:
+            return value.payment.pk
+        except:
+            return None
 
     def get_shipping(self, value):
         try:
@@ -189,10 +218,7 @@ class SaleSerializer(serializers.ModelSerializer):
             return None
 
     def get_total(self, value):
-        if value.saleitem_set.all():
-            sale_items = value.saleitem_set.all()
-            return sale_items.aggregate(total=Sum(F('price') * F('quantity'))).get('total')
-        return 0
+        return value.total()
 
     def get_brand_name(self, value):
         if value.brand:
@@ -227,7 +253,7 @@ class SaleItemSerializer(serializers.ModelSerializer):
     total = serializers.SerializerMethodField()
 
     def get_total(self, obj):
-        return obj.quantity * obj.price
+        return obj.total()
 
     def get_product_name(self, obj):
         return obj.product.name
@@ -309,4 +335,13 @@ class ReportSaleItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SaleReportSerializer(SaleSerializer):
+    saleitem_set = SaleItemSerializer(many=True)
+    payment = PaymentSerializer(many=False)
+    shipping = ShippingSerializer(many=False)
+    customer = CustomerSerializer(many=False)
+    brand = BrandSerializer(many=False)
 
+    class Meta(SaleSerializer.Meta):
+        model = Sale
+        fields = '__all__'
