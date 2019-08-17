@@ -93,7 +93,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('-created')
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
