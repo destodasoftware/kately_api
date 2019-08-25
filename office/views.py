@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotAcceptable
+from rest_framework.exceptions import NotAcceptable, NotFound, ValidationError
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
@@ -136,6 +136,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         root = self.request.GET.get('root')
         show_root = self.request.GET.get('show_root')
         brand = self.request.GET.get('brand')
+        sku = self.request.GET.get('sku')
 
         if brand:
             queryset = queryset.filter(brand__pk=brand)
@@ -147,10 +148,10 @@ class ProductViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(article__pk=article)
 
         if name:
-            temp = queryset.filter(sku=name)
+            queryset = queryset.filter(name__icontains=name)
 
-            if not temp:
-                queryset = queryset.filter(name__icontains=name)
+        if sku:
+            queryset = queryset.filter(sku=sku)
 
         if root:
             queryset = queryset.filter(root__pk=root)
@@ -194,6 +195,19 @@ class PurchaseViewSet(viewsets.ModelViewSet):
     queryset = Purchase.objects.all().order_by('-created', 'id')
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = self.queryset
+        purchase_number = self.request.GET.get('purchase_number')
+        brand = self.request.GET.get('brand')
+
+        if purchase_number:
+            queryset = queryset.filter(purchase_number=purchase_number)
+
+        if brand:
+            queryset = queryset.filter(brand__pk=brand)
+
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -248,9 +262,14 @@ class SaleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset.order_by('-created', 'id')
         sale_number = self.request.GET.get('sale_number')
+        brand = self.request.GET.get('brand')
+        temps = queryset
 
         if sale_number:
             queryset = queryset.filter(sale_number=sale_number)
+
+        if brand:
+            queryset = queryset.filter(brand__pk=brand)
 
         return queryset
 

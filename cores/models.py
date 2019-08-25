@@ -12,33 +12,35 @@ from sales.models import SaleItem, Payment, Sale, Shipping
 #     is_paid = models.BooleanField(default=False)
 #     note = models.TextField()
 
-def update_or_create_payment(sale):
-    try:
-        Payment.objects.get_or_create(
-            sale=sale,
-            is_paid=False,
-            amount=sale.total()
-        )
-    except:
-        payment = Payment.objects.get(sale=sale)
-        payment.amount = sale.total()
-        payment.save()
+def update_payment(sale):
+    payment = Payment.objects.get(sale=sale)
+    payment.amount = sale.total()
+    payment.save()
 
+def create_payment(sale):
+    Payment.objects.create(
+        sale=sale,
+        is_paid=False,
+        amount=sale.total()
+    )
 
 @receiver(post_save, sender=Sale)
 def save_sale(sender, instance, created, **kwargs):
     print('Invoke save_sale')
-    update_or_create_payment(instance)
+    if created:
+        create_payment(instance)
+    else:
+        update_payment(instance)
 
 
 @receiver(post_save, sender=SaleItem)
 def save_saleitem(sender, instance, created, **kwargs):
-    update_or_create_payment(instance.sale)
+    update_payment(instance.sale)
 
 
 @receiver(post_save, sender=Shipping)
 def save_shipping(sender, instance, created, **kwargs):
-    update_or_create_payment(instance.sale)
-
+    # print(instance.sale)
+    update_payment(instance.sale)
 
 

@@ -76,27 +76,9 @@ class Shipping(Utility):
 
 
 class Payment(Utility):
-    # TYPE_BANK_TRANSFER = 'bank-transfer'
-    # TYPE_CASH = 'cash'
-    #
-    # BANK_BCA = 'BCA'
-    # BANK_MANDIRI = 'MANDIRI'
-    # BANK_BNI = 'BNI'
-    # BANK_BTN = 'BTN'
-    # BANK_BRI = 'BRI'
-    # BANK_CIMB_NIAGA = 'Cimb Niaga'
-    # PAYMENT_BANK = (
-    #     (BANK_BCA, BANK_BCA),
-    #     (BANK_MANDIRI, BANK_MANDIRI),
-    #     (BANK_BNI, BANK_BNI),
-    #     (BANK_BTN, BANK_BTN),
-    #     (BANK_BRI, BANK_BRI),
-    #     (BANK_CIMB_NIAGA, BANK_CIMB_NIAGA),
-    # )
     sale = models.OneToOneField(Sale, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=0)
     is_paid = models.BooleanField(default=False)
-    # bank = models.CharField(max_length=100, default=BANK_BCA, choices=PAYMENT_BANK)
 
     def __str__(self):
         return self.sale.sale_number
@@ -123,7 +105,6 @@ class SaleItem(Utility):
 
     def __str__(self):
         return self.product.name
-
 
 
 

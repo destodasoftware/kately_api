@@ -38,7 +38,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_number_variation(self, obj):
         if obj.product_set.all():
             return obj.product_set.all().count()
-        return None
+        return 0
 
     def get_total_stock(self, obj):
         if obj.product_set.all():
@@ -132,11 +132,10 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
 class PurchaseSerializer(serializers.ModelSerializer):
     pic = serializers.SerializerMethodField()
     total_stock = serializers.SerializerMethodField()
+    brand_name = serializers.SerializerMethodField()
 
     def get_pic(self, value):
         if value.user:
@@ -147,6 +146,11 @@ class PurchaseSerializer(serializers.ModelSerializer):
         if value.purchaseitem_set.all():
             return value.purchaseitem_set.all().aggregate(Sum('quantity')).get('quantity__sum', 0)
         return 0
+
+    def get_brand_name(self, value):
+        if value.brand:
+            return value.brand.name
+        return None
 
     class Meta:
         model = Purchase
@@ -201,6 +205,7 @@ class PurchaseItemSerializer(serializers.ModelSerializer):
 class SaleSerializer(serializers.ModelSerializer):
     pic = serializers.SerializerMethodField()
     brand_name = serializers.SerializerMethodField()
+    customer_name = serializers.SerializerMethodField()
     shipping = serializers.SerializerMethodField()
     total = serializers.SerializerMethodField()
     payment = serializers.SerializerMethodField()
@@ -224,6 +229,11 @@ class SaleSerializer(serializers.ModelSerializer):
         if value.brand:
             return value.brand.name
         return '-'
+
+    def get_customer_name(self, value):
+        if value.customer:
+            return value.customer.name
+        return 'No Customer'
 
     def get_pic(self, value):
         if value.user:

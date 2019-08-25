@@ -3,6 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2f395ead-6e16-4bcb-85b5-70f44cf47276" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cores/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/cores/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/office/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/office/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/purchasing/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/purchasing/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sales/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sales/models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,7 +32,7 @@
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../feraza/projects/feraza_api" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RecentsManager">
@@ -129,7 +135,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566079730549</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Fix brand main manager.">
+      <created>1566215196584</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1566215196584</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -152,6 +165,7 @@
     <MESSAGE value="Add shipping resources API." />
     <MESSAGE value="Fix pelanggan / Customer manager." />
     <MESSAGE value="Memperbaikin app kelola kategori." />
-    <option name="LAST_COMMIT_MESSAGE" value="Memperbaikin app kelola kategori." />
+    <MESSAGE value="Fix brand main manager." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix brand main manager." />
   </component>
 </project>
