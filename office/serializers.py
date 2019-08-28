@@ -258,9 +258,15 @@ class ShippingSerializer(serializers.ModelSerializer):
 
 
 class SaleItemSerializer(serializers.ModelSerializer):
+    sale_number = serializers.SerializerMethodField()
     product_name = serializers.SerializerMethodField()
     product_stock = serializers.SerializerMethodField()
     total = serializers.SerializerMethodField()
+
+    def get_sale_number(self, obj):
+        if obj.sale:
+            return obj.sale.sale_number
+        return None
 
     def get_total(self, obj):
         return obj.total()

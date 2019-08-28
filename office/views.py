@@ -167,8 +167,12 @@ class SaleItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset.filter().order_by('-created', 'id')
-        sale = self.request.GET.get('sale')
+        sale_number = self.request.GET.get('sale_number')
         name = self.request.GET.get('name')
+        sale = self.request.GET.get('sale')
+
+        if sale_number:
+            queryset = queryset.filter(sale__sale_number=sale_number)
 
         if sale:
             queryset = queryset.filter(sale__pk=sale)
@@ -181,6 +185,159 @@ class SaleItemViewSet(viewsets.ModelViewSet):
                 queryset = qs
 
         return queryset
+
+    @action(detail=False)
+    def export_csv(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'nomer_order',
+            'brand',
+            'customer_name',
+            'customer_phone',
+            'customer_email',
+            'shipping_address',
+            'shipping_cost',
+            'tracking_number',
+            'courier',
+            'product_name',
+            'size',
+            'color',
+            'quantity',
+            'price',
+            'discount',
+            'line_total',
+        ])
+        queryset = self.get_queryset()
+        for data in queryset:
+            if data.sale:
+                brand = ''
+                customer_name = ''
+                customer_phone = ''
+                customer_email = ''
+                shipping_address = ''
+                shipping_cost = ''
+                tracking_number = ''
+                courier = ''
+                discount = ''
+
+                if data.sale.brand:
+                    brand = data.sale.brand.name
+
+                if data.sale.customer:
+                    customer_name = data.sale.customer.name
+                    customer_email = data.sale.customer.email
+                    customer_phone = data.sale.customer.phone
+
+                if Shipping.objects.filter(sale=data.sale):
+                    shipping = Shipping.objects.get(sale=data.sale)
+                    shipping_address = f'{shipping.address} ' \
+                                       f'{shipping.province}, ' \
+                                       f'{shipping.city}, ' \
+                                       f'{shipping.country}, {shipping.postal_code}'
+                    tracking_number = shipping.tracking_number
+                    shipping_cost = shipping.cost
+                    courier = shipping.courier_service
+
+                if data.is_percent:
+                    discount = f'{data.discount}%'
+                else:
+                    discount = f'Rp.{data.discount}'
+
+                writer.writerow([
+                    data.sale.sale_number,
+                    brand,
+                    customer_name,
+                    customer_phone,
+                    customer_email,
+                    shipping_address,
+                    shipping_cost,
+                    tracking_number,
+                    courier,
+                    data.product.name,
+                    data.product.size,
+                    data.product.color,
+                    data.quantity,
+                    data.price,
+                    discount,
+                    data.total()
+                ])
+
+        return response
+
+    @action(detail=False)
+    def export_pakde(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'order_number',
+            'client_name',
+            'customer_name',
+            'customer_email',
+            'customer_phone',
+            'customer_address',
+            'product_name',
+            'size_name',
+            'courier',
+            'no_resi',
+            'quantity',
+            'ongkir'
+        ])
+        queryset = self.get_queryset()
+        for data in queryset:
+            if data.sale:
+                brand = ''
+                customer_name = ''
+                customer_phone = ''
+                customer_email = ''
+                shipping_address = ''
+                shipping_cost = ''
+                tracking_number = ''
+                courier = ''
+                discount = ''
+
+                if data.sale.brand:
+                    brand = data.sale.brand.name
+
+                if data.sale.customer:
+                    customer_name = data.sale.customer.name
+                    customer_email = data.sale.customer.email
+                    customer_phone = data.sale.customer.phone
+
+                if Shipping.objects.filter(sale=data.sale):
+                    shipping = Shipping.objects.get(sale=data.sale)
+                    shipping_address = f'{shipping.address} ' \
+                                       f'{shipping.province}, ' \
+                                       f'{shipping.city}, ' \
+                                       f'{shipping.country}, {shipping.postal_code}'
+                    tracking_number = shipping.tracking_number
+                    shipping_cost = shipping.cost
+                    courier = shipping.courier_service
+
+                if data.is_percent:
+                    discount = f'{data.discount}%'
+                else:
+                    discount = f'Rp.{data.discount}'
+
+                writer.writerow([
+                    data.sale.sale_number,
+                    brand,
+                    customer_name,
+                    customer_email,
+                    customer_phone,
+                    shipping_address,
+                    data.product.name,
+                    data.product.size,
+                    courier,
+                    tracking_number,
+                    shipping_cost
+                ])
+
+        return response
 
     def perform_destroy(self, instance):
         # Re stock again
@@ -304,6 +461,27 @@ class SaleViewSet(viewsets.ModelViewSet):
         send_email_order(sale, sale.user.email, sale.customer.email)
         return Response({'ok': True})
 
+    @action(detail=False)
+    def chart(self, request):
+
+        sales = Payment.objects.filter(is_paid=True).values('sale__brand__name').annotate(
+            Sum('amount')
+        )
+        categories = []
+        series = []
+        for sale in sales:
+            series.append({
+                'name': sale.get('sale__brand__name'),
+                'data': sale.get('amount__sum')
+            })
+
+        result = {
+            'categories': categories,
+            'series': series
+        }
+
+        return Response(result)
+
 
 class ShippingViewSet(viewsets.ModelViewSet):
     serializer_class = ShippingSerializer
@@ -381,6 +559,7 @@ class SaleReportViewSet(viewsets.ModelViewSet):
                 ])
 
         return response
+
 
 class ReportSaleItemViewSet(viewsets.ModelViewSet):
     serializer_class = ReportSaleItemSerializer

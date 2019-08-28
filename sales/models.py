@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Sum, F
 
 from products.models import Product, Brand
 from users.models import Customer
