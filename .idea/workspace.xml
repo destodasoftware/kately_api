@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2f395ead-6e16-4bcb-85b5-70f44cf47276" name="Default Changelist" comment="">
+    <list default="true" id="2f395ead-6e16-4bcb-85b5-70f44cf47276" name="Default Changelist" comment="Menambahkan allowed host.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/office/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/office/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/office/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sales/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/sales/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

@@ -25,7 +25,7 @@ class Product(Utility):
     name = models.CharField(max_length=100, blank=True, null=True)
     cost = models.PositiveIntegerField(default=0)
     price = models.PositiveIntegerField(default=0)
-    stock = models.PositiveIntegerField(blank=True, null=True)
+    stock = models.PositiveIntegerField(blank=True, null=True, default=0)
     minimum_stock = models.PositiveIntegerField(default=0)
     color = models.CharField(max_length=100, blank=True, null=True)
     size = models.CharField(max_length=100, blank=True, null=True)
